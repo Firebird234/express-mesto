@@ -6,7 +6,7 @@ const { deleteCard } = require("../controllers/cardControllers/deleteCard");
 const { addLike } = require("../controllers/cardControllers/addLike");
 const { removeLike } = require("../controllers/cardControllers/removeLike");
 
-const Card = require("../card");
+const Card = require("../models/card");
 
 //КАРТОЧКИ
 cardRouter.post("/cards", createCard);

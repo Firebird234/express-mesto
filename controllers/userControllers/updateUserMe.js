@@ -1,20 +1,29 @@
-const User = require("../../user");
+const User = require("../../models/user");
 
 module.exports.updateUserMe = (req, res) => {
   const me = [req.user._id];
-  const { name, about, avatar } = req.body;
+  const { name, about } = req.body;
   User.findByIdAndUpdate(
     me,
-    { name, about, avatar },
+    { name, about },
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-      upsert: true, // если пользователь не найден, он будет создан
     }
   )
-    .then(({ name, about, avatar, _id }) =>
-      res.send({ name, about, avatar, _id })
-    )
+    .then((user) => {
+      const { name, about, _id } = user;
+      if (!user) {
+        return res.status(404).send({ message: "НЕВЕРНЫЙ ID ЮЗЕРА" });
+      }
+
+      if (!name || !about) {
+        return res
+          .status(400)
+          .send({ message: 'Поля "name" и "about" должно быть заполнены' });
+      }
+      res.send({ name, about, _id });
+    })
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res.status(400).send({

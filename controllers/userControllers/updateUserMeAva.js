@@ -1,4 +1,4 @@
-const User = require("../../user");
+const User = require("../../models/user");
 
 module.exports.updateUserMeAva = (req, res) => {
   const me = [req.user._id];
@@ -9,10 +9,17 @@ module.exports.updateUserMeAva = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-      upsert: true, // если пользователь не найден, он будет создан
     }
   )
-    .then(({ avatar }) => res.send({ avatar }))
+    .then((user) => {
+      if (!user) {
+        res
+          .status(404)
+          .send({ message: "ЧЕТ С АЙДИШНИКОМ ЮЗЕРА НЕ ТАК, БРАТИШКА" });
+      }
+      const { avatar } = user;
+      res.send({ avatar });
+    })
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res.status(400).send({

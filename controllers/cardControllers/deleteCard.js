@@ -1,13 +1,17 @@
-const Card = require("../../card");
+const Card = require("../../models/card");
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then(({ name, link, owner, likes, _id }) =>
-      res.send({ name, link, owner, likes, _id })
-    )
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({ message: "НЕВЕРНЫЙ ID " });
+      }
+      const { name, link, owner, likes, _id } = user;
+      res.send({ name, link, owner, likes, _id });
+    })
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(404).send({
+        return res.status(400).send({
           message:
             "Косяяяяк, эта карточка итак уже тютю=-(Была да вся вышла...",
         });
