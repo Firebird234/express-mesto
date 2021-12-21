@@ -1,23 +1,19 @@
-const cardRouter = require("express").Router();
+const cardRouter = require('express').Router();
 
-const { createCard } = require("../controllers/cardControllers/createCard");
-const { getCards } = require("../controllers/cardControllers/getCards");
-const { deleteCard } = require("../controllers/cardControllers/deleteCard");
-const { addLike } = require("../controllers/cardControllers/addLike");
-const { removeLike } = require("../controllers/cardControllers/removeLike");
+const { createCard } = require('../controllers/cardControllers/createCard');
+const { getCards } = require('../controllers/cardControllers/getCards');
+const { deleteCard } = require('../controllers/cardControllers/deleteCard');
+const { addLike } = require('../controllers/cardControllers/addLike');
+const { removeLike } = require('../controllers/cardControllers/removeLike');
 
-const Card = require("../models/card");
+cardRouter.post('/cards', createCard);
 
-//КАРТОЧКИ
-cardRouter.post("/cards", createCard);
+cardRouter.get('/cards', getCards);
 
-cardRouter.get("/cards", getCards);
+cardRouter.delete('/cards/:cardId', deleteCard);
 
-cardRouter.delete("/cards/:cardId", deleteCard);
+cardRouter.put('/cards/:cardId/likes', addLike);
 
-cardRouter.put("/cards/:cardId/likes", addLike);
-
-cardRouter.delete("/cards/:cardId/likes", removeLike);
-//_____________________________КАРТОЧКИ
+cardRouter.delete('/cards/:cardId/likes', removeLike);
 
 module.exports = cardRouter;
