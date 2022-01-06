@@ -1,7 +1,15 @@
 const User = require('../../models/user');
+const {
+  NotFoundIdError,
+  ValError,
+  incorrectTokenError,
+  userCreatedError,
+  ServerError,
+  UserNoundError,
+} = require('../../errors');
 
-module.exports.updateUserMeAva = (req, res) => {
-  const me = [req.user._id];
+module.exports.updateUserMeAva = (req, res, next) => {
+  const me = req.user.id;
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     me,
@@ -20,10 +28,9 @@ module.exports.updateUserMeAva = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({
-          message: 'Кажись косяк в твоей аватарке, и что ты мне сделаешь?',
-        });
+        throw new ValError();
       }
-      return res.status(500).send({ erro: err.name, message: 'Произошла ошибка' });
-    });
+      throw new ServerError();
+    })
+    .catch(next);
 };

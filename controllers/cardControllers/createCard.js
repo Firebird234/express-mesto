@@ -1,16 +1,24 @@
 const Card = require('../../models/card');
+const {
+  NotFoundIdError,
+  ValError,
+  incorrectTokenError,
+  userCreatedError,
+  ServerError,
+  UserNoundError,
+} = require('../../errors');
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
-  const owner = [req.user._id];
+  const owner = [req.user.id];
+  console.log(owner);
   Card.create({ name, link, owner })
     .then(({ name, link, owner, likes, _id }) => res.send({ name, link, owner, likes, _id }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({
-          message: 'Кажись косяк в введенных данных, будь котиком, проверь',
-        });
+        throw new ValError();
       }
-      return res.status(500).send({ erro: err.name, message: 'Произошла ошибка' });
-    });
+      throw new ServerError();
+    })
+    .catch(next);
 };

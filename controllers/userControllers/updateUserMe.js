@@ -1,8 +1,17 @@
 const User = require('../../models/user');
+const {
+  NotFoundIdError,
+  ValError,
+  incorrectTokenError,
+  userCreatedError,
+  ServerError,
+  UserNoundError,
+} = require('../../errors');
 
-module.exports.updateUserMe = (req, res) => {
-  const me = [req.user._id];
+module.exports.updateUserMe = (req, res, next) => {
+  const me = req.user.id;
   const { name, about } = req.body;
+  console.log(me);
   if (!name || !about) {
     return res.status(400).send({ message: 'Поля "name" и "about" должно быть заполнены' });
   }
@@ -15,7 +24,9 @@ module.exports.updateUserMe = (req, res) => {
     },
   )
     .then((user) => {
+      console.log(1);
       if (!user) {
+        console.log(2);
         return res.status(404).send({ message: 'НЕВЕРНЫЙ ID ЮЗЕРА' });
       }
       const { name, about, _id } = user;
@@ -24,10 +35,9 @@ module.exports.updateUserMe = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({
-          message: 'Кажись косяк в введенных данных, будь котиком, проверь',
-        });
+        throw new ValError();
       }
-      return res.status(500).send({ erro: err.name, message: 'Произошла ошибка' });
-    });
+      throw new ServerError();
+    })
+    .catch(next);
 };

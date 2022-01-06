@@ -1,9 +1,18 @@
 const Card = require('../../models/card');
+const {
+  NotFoundIdError,
+  ValError,
+  incorrectTokenError,
+  userCreatedError,
+  ServerError,
+  UserNoundError,
+} = require('../../errors');
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find()
     .then((user) => res.send(user))
     .catch((err) => {
-      res.status(500).send({ erro: err.name, message: 'Произошла ошибка' });
-    });
+      throw new ServerError();
+    })
+    .catch(next);
 };

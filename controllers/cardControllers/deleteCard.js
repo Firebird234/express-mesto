@@ -1,20 +1,37 @@
 const Card = require('../../models/card');
+const {
+  NotFoundIdError,
+  ValError,
+  incorrectTokenError,
+  userCreatedError,
+  ServerError,
+  UserNoundError,
+} = require('../../errors');
 
-module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .then((user) => {
-      if (!user) {
-        return res.status(404).send({ message: 'НЕВЕРНЫЙ ID ' });
+module.exports.deleteCard = (req, res, next) => {
+  Card.findById(req.params.cardId)
+    .then((card) => {
+      console.log('card found');
+      if (req.user.id === card.owner.toString()) {
+        console.log('if = TRUE');
+        return Card.findByIdAndRemove(req.params.cardId).then((user) => {
+          if (!user) {
+            return Promise.reject(new Error('НЕВЕРНЫЙ ID'));
+          }
+          const { name, link, owner, likes, _id } = user;
+
+          return res.send({ name, link, owner, likes, _id });
+        });
       }
-      const { name, link, owner, likes, _id } = user;
-      return res.send({ name, link, owner, likes, _id });
+      return res.status(500).send({ message: 'Не твое-нетрогай' });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({
-          message: 'Косяяяяк, эта карточка итак уже тютю=-(Была да вся вышла...',
-        });
+        console.log('catch inside if');
+        throw new NotFoundIdError();
       }
-      return res.status(500).send({ erro: err.name, message: 'Произошла ошибка' });
-    });
+      console.log('catch outside if');
+      throw new ServerError();
+    })
+    .catch(next);
 };

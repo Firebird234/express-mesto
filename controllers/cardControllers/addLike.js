@@ -1,7 +1,15 @@
 const Card = require('../../models/card');
+const {
+  NotFoundIdError,
+  ValError,
+  incorrectTokenError,
+  userCreatedError,
+  ServerError,
+  UserNoundError,
+} = require('../../errors');
 
-module.exports.addLike = (req, res) => {
-  const me = req.user._id;
+module.exports.addLike = (req, res, next) => {
+  const me = req.user.id;
   const { cardId } = req.params;
   Card.findByIdAndUpdate(
     cardId,
@@ -20,10 +28,9 @@ module.exports.addLike = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({
-          message: 'Косяяяяк, больше нетю этой карточки=-(Была да вся вышла...',
-        });
+        throw new NotFoundIdError();
       }
-      return res.status(500).send({ erro: err.name, message: 'Произошла ошибка' });
-    });
+      throw new ServerError();
+    })
+    .catch(next);
 };

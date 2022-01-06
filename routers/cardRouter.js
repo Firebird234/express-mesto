@@ -5,8 +5,18 @@ const { getCards } = require('../controllers/cardControllers/getCards');
 const { deleteCard } = require('../controllers/cardControllers/deleteCard');
 const { addLike } = require('../controllers/cardControllers/addLike');
 const { removeLike } = require('../controllers/cardControllers/removeLike');
+const { celebrate, Joi } = require('celebrate');
 
-cardRouter.post('/cards', createCard);
+cardRouter.post(
+  '/cards',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().min(2).max(30),
+      link: Joi.string(),
+    }),
+  }),
+  createCard,
+);
 
 cardRouter.get('/cards', getCards);
 
