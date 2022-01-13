@@ -1,12 +1,8 @@
 const Card = require('../../models/card');
-const {
-  NotFoundIdError,
-  ValError,
-  incorrectTokenError,
-  userCreatedError,
-  ServerError,
-  UserNoundError,
-} = require('../../errors');
+
+const { NotFoundIdError } = require('../../errors/NotFoundIdError');
+
+const { ServerError } = require('../../errors/ServerError');
 
 module.exports.addLike = (req, res, next) => {
   const me = req.user.id;
@@ -21,7 +17,7 @@ module.exports.addLike = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'НЕВАЛИДНЫЙ ID КАРТОЧКИ' });
+        throw new NotFoundIdError();
       }
       const { _id, name, owner, link, likes } = user;
       return res.send({ _id, name, owner, link, likes });

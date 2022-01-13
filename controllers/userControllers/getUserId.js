@@ -1,12 +1,7 @@
 const User = require('../../models/user');
-const {
-  NotFoundIdError,
-  ValError,
-  incorrectTokenError,
-  userCreatedError,
-  ServerError,
-  UserNoundError,
-} = require('../../errors');
+
+const { UserNoundError } = require('../../errors/UserNoundError');
+const { NotFoundIdError } = require('../../errors/NotFoundIdError');
 
 module.exports.getUserId = (req, res, next) => {
   User.findById(req.params.userId)
@@ -19,9 +14,9 @@ module.exports.getUserId = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new NotFoundIdError();
+        next(new NotFoundIdError());
+      } else {
+        next(err);
       }
-      throw new ServerError();
-    })
-    .catch(next);
+    });
 };

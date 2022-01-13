@@ -1,20 +1,14 @@
 const User = require('../../models/user');
-const {
-  NotFoundIdError,
-  ValError,
-  incorrectTokenError,
-  userCreatedError,
-  ServerError,
-  UserNoundError,
-} = require('../../errors');
+const { ValError } = require('../../errors/ValError');
+const { UserNoundError } = require('../../errors/UserNoundError');
 
 module.exports.updateUserMe = (req, res, next) => {
   const me = req.user.id;
   const { name, about } = req.body;
   console.log(me);
-  if (!name || !about) {
-    return res.status(400).send({ message: 'Поля "name" и "about" должно быть заполнены' });
-  }
+  // if (!name || !about) {
+  //   return res.status(400).send({ message: 'Поля "name" и "about" должно быть заполнены' });
+  // }
   return User.findByIdAndUpdate(
     me,
     { name, about },
@@ -27,7 +21,7 @@ module.exports.updateUserMe = (req, res, next) => {
       console.log(1);
       if (!user) {
         console.log(2);
-        return res.status(404).send({ message: 'НЕВЕРНЫЙ ID ЮЗЕРА' });
+        return next(new UserNoundError());
       }
       const { name, about, _id } = user;
 
@@ -35,9 +29,9 @@ module.exports.updateUserMe = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValError();
+        next(new ValError());
+      } else {
+        next(err);
       }
-      throw new ServerError();
-    })
-    .catch(next);
+    });
 };

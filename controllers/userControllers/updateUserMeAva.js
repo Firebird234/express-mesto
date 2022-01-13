@@ -1,12 +1,7 @@
 const User = require('../../models/user');
-const {
-  NotFoundIdError,
-  ValError,
-  incorrectTokenError,
-  userCreatedError,
-  ServerError,
-  UserNoundError,
-} = require('../../errors');
+
+const { ValError } = require('../../errors/ValError');
+const { UserNoundError } = require('../../errors/UserNoundError');
 
 module.exports.updateUserMeAva = (req, res, next) => {
   const me = req.user.id;
@@ -21,16 +16,16 @@ module.exports.updateUserMeAva = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'ЧЕТ С АЙДИШНИКОМ ЮЗЕРА НЕ ТАК, БРАТИШКА' });
+        return next(new UserNoundError());
       }
       const { avatar } = user;
       res.send({ avatar });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValError();
+        next(new ValError());
+      } else {
+        next(err);
       }
-      throw new ServerError();
-    })
-    .catch(next);
+    });
 };
