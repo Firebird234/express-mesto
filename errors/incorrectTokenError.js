@@ -1,7 +1,7 @@
 class incorrectTokenError extends Error {
   constructor(message) {
     super(message);
-    this.message = 'Проблемы с токеном';
+    this.message = 'Проблемы с логином или поролем, но это неточно';
     this.statusCode = 401;
   }
 }

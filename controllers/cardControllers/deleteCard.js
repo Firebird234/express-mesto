@@ -2,7 +2,7 @@ const Card = require('../../models/card');
 
 const { NotFoundIdError } = require('../../errors/NotFoundIdError');
 
-const { ServerError } = require('../../errors/ServerError');
+const { NotCardOwnerError } = require('../../errors/NotCardOwnerError');
 const { UserNoundError } = require('../../errors/UserNoundError');
 
 module.exports.deleteCard = (req, res, next) => {
@@ -23,7 +23,7 @@ module.exports.deleteCard = (req, res, next) => {
           return res.send({ name, link, owner, likes, _id });
         });
       }
-      throw new ServerError();
+      throw new NotCardOwnerError();
     })
     .catch((err) => {
       if (err.name === 'CastError') {

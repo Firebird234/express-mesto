@@ -21,22 +21,31 @@ app.use(cookieParser());
 app.post(
   '/signin',
   celebrate({
-    body: Joi.object()
-      .keys({
-        email: Joi.string().required().email(),
-      })
-      .unknown(true),
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(6).max(20),
+    }),
   }),
   login,
 );
 app.post(
   '/signup',
   celebrate({
-    body: Joi.object()
-      .keys({
-        email: Joi.string().required().email(),
-      })
-      .unknown(true),
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      name: Joi.string().required(),
+      about: Joi.string().required(),
+      avatar: Joi.string()
+        .min(2)
+        .required()
+        .custom((value) => {
+          if (!validator.isURL(value, { require_protocol: true })) {
+            console.log(bingo);
+            return next(new ValError());
+          }
+          return value;
+        }),
+    }),
   }),
   createUser,
 );

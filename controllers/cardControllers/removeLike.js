@@ -1,7 +1,6 @@
 const Card = require('../../models/card');
 
-const { ServerError } = require('../../errors/ServerError');
-const { UserNoundError } = require('../../errors/UserNoundError');
+const { CardNotFoundError } = require('../../errors/CardNotFoundError');
 
 module.exports.removeLike = (req, res, next) => {
   const me = req.user.id;
@@ -16,16 +15,16 @@ module.exports.removeLike = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        return next(new NotFoundIdError());
+        return next(new CardNotFoundError());
       }
       const { name, link, owner, likes, _id } = user;
       res.send({ name, link, owner, likes, _id });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new NotFoundIdError());
+        next(new CardNotFoundError());
       } else {
-        next(new ServerError());
+        next(err);
       }
     });
 };

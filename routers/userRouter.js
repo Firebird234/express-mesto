@@ -28,13 +28,10 @@ userRouter.get(
 userRouter.patch(
   '/users/me',
   celebrate({
-    body: Joi.object()
-      .keys({
-        name: Joi.string().min(2).max(30).required(),
-        about: Joi.string().min(2).max(30).required(),
-        avatar: Joi.string().min(2).max(30).required(),
-      })
-      .unknown(true),
+    body: Joi.object().keys({
+      name: Joi.string().min(2).max(30).required(),
+      about: Joi.string().min(2).max(30).required(),
+    }),
   }),
   updateUserMe,
 );
@@ -45,7 +42,6 @@ userRouter.patch(
     body: Joi.object().keys({
       avatar: Joi.string()
         .min(2)
-        .max(30)
         .required()
         .custom((value) => {
           if (!validator.isURL(value, { require_protocol: true })) {
