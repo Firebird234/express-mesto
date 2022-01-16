@@ -2,20 +2,26 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
+const validator = require('validator');
 const cardRouter = require('./routers/cardRouter');
 const userRouter = require('./routers/userRouter');
 const { login } = require('./controllers/userControllers/login');
 const { createUser } = require('./controllers/userControllers/createUser');
 const { auth } = require('./middlewares/auth');
-const { celebrate, Joi } = require('celebrate');
-const { errors } = require('celebrate');
+const { ValError } = require('./errors/ValError');
 
 const { NoSuchRouteError } = require('./errors/NoSuchRouteError');
 
 const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb');
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  }),
+);
 app.use(cookieParser());
 
 app.post(
@@ -39,12 +45,16 @@ app.post(
         .min(2)
         .required()
         .custom((value) => {
-          if (!validator.isURL(value, { require_protocol: true })) {
-            console.log(bingo);
-            return next(new ValError());
+          if (
+            !validator.isURL(value, {
+              require_protocol: true,
+            })
+          ) {
+            throw new ValError();
           }
           return value;
         }),
+      password: Joi.string().required(),
     }),
   }),
   createUser,
@@ -61,10 +71,10 @@ app.use((req, res, next) => {
 
 app.use(errors());
 
-app.use((err, req, res, next) => {
-  res
-    .status(err.statusCode === undefined ? 500 : err.statusCode)
-    .send({ message: err.message + ' thats it' });
+app.use((err, req, res) => {
+  res.status(err.statusCode === undefined ? 500 : err.statusCode).send({
+    message: `${err.message} thats it`,
+  });
 });
 
 app.listen(3000, () => {

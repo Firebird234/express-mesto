@@ -10,7 +10,9 @@ module.exports.getUserId = (req, res, next) => {
         throw new UserNoundError();
       }
       const { name, about, avatar, _id } = user;
-      return res.send({ name, about, avatar, _id });
+      return res.send({
+        name, about, avatar, _id,
+      });
     })
     .catch((err) => {
       if (err.name === 'CastError') {

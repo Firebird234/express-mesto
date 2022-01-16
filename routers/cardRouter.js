@@ -1,12 +1,12 @@
 const cardRouter = require('express').Router();
 
+const { celebrate, Joi } = require('celebrate');
+const validator = require('validator');
 const { createCard } = require('../controllers/cardControllers/createCard');
 const { getCards } = require('../controllers/cardControllers/getCards');
 const { deleteCard } = require('../controllers/cardControllers/deleteCard');
 const { addLike } = require('../controllers/cardControllers/addLike');
 const { removeLike } = require('../controllers/cardControllers/removeLike');
-const { celebrate, Joi } = require('celebrate');
-const validator = require('validator');
 
 const { ValError } = require('../errors/ValError');
 
@@ -18,9 +18,12 @@ cardRouter.post(
       link: Joi.string()
         .required()
         .custom((value) => {
-          if (!validator.isURL(value, { require_protocol: true })) {
-            console.log(bingo);
-            return next(new ValError());
+          if (
+            !validator.isURL(value, {
+              require_protocol: true,
+            })
+          ) {
+            throw new ValError();
           }
           return value;
         }),

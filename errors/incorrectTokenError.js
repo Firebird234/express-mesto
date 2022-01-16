@@ -1,4 +1,4 @@
-class incorrectTokenError extends Error {
+class IncorrectTokenError extends Error {
   constructor(message) {
     super(message);
     this.message = 'Проблемы с логином или поролем, но это неточно';
@@ -7,5 +7,5 @@ class incorrectTokenError extends Error {
 }
 
 module.exports = {
-  incorrectTokenError,
+  IncorrectTokenError,
 };

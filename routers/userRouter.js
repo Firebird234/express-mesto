@@ -1,12 +1,12 @@
 const userRouter = require('express').Router();
 // const { createUser } = require('../controllers/userControllers/createUser');
+const { celebrate, Joi } = require('celebrate');
+const validator = require('validator');
 const { getUserId } = require('../controllers/userControllers/getUserId');
 const { getUsers } = require('../controllers/userControllers/getUsers');
 const { getUserMe } = require('../controllers/userControllers/getUserMe');
 const { updateUserMe } = require('../controllers/userControllers/updateUserMe');
 const { updateUserMeAva } = require('../controllers/userControllers/updateUserMeAva');
-const { celebrate, Joi } = require('celebrate');
-const validator = require('validator');
 const { ValError } = require('../errors/ValError');
 
 userRouter.get('/users', getUsers);
@@ -44,9 +44,12 @@ userRouter.patch(
         .min(2)
         .required()
         .custom((value) => {
-          if (!validator.isURL(value, { require_protocol: true })) {
-            console.log(bingo);
-            return next(new ValError());
+          if (
+            !validator.isURL(value, {
+              require_protocol: true,
+            })
+          ) {
+            throw new ValError();
           }
           return value;
         }),

@@ -1,4 +1,4 @@
-class userCreatedError extends Error {
+class UserCreatedError extends Error {
   constructor(message) {
     super(message);
     this.message = 'Такой мэйл уже зарегистрирован';
@@ -7,5 +7,5 @@ class userCreatedError extends Error {
 }
 
 module.exports = {
-  userCreatedError,
+  UserCreatedError,
 };

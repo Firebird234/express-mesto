@@ -7,7 +7,11 @@ module.exports.removeLike = (req, res, next) => {
   const { cardId } = req.params;
   Card.findByIdAndUpdate(
     cardId,
-    { $pull: { likes: me } },
+    {
+      $pull: {
+        likes: me,
+      },
+    },
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
@@ -18,7 +22,13 @@ module.exports.removeLike = (req, res, next) => {
         return next(new CardNotFoundError());
       }
       const { name, link, owner, likes, _id } = user;
-      res.send({ name, link, owner, likes, _id });
+      return res.send({
+        name,
+        link,
+        owner,
+        likes,
+        _id,
+      });
     })
     .catch((err) => {
       if (err.name === 'CastError') {

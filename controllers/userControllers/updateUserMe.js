@@ -11,7 +11,9 @@ module.exports.updateUserMe = (req, res, next) => {
   // }
   return User.findByIdAndUpdate(
     me,
-    { name, about },
+    {
+      name, about,
+    },
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
@@ -25,7 +27,9 @@ module.exports.updateUserMe = (req, res, next) => {
       }
       const { name, about, _id } = user;
 
-      return res.send({ name, about, _id });
+      return res.send({
+        name, about, _id,
+      });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

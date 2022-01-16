@@ -8,7 +8,9 @@ module.exports.updateUserMeAva = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     me,
-    { avatar },
+    {
+      avatar,
+    },
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
@@ -19,7 +21,9 @@ module.exports.updateUserMeAva = (req, res, next) => {
         return next(new UserNoundError());
       }
       const { avatar } = user;
-      res.send({ avatar });
+      return res.send({
+        avatar,
+      });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

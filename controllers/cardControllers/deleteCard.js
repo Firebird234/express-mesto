@@ -20,7 +20,9 @@ module.exports.deleteCard = (req, res, next) => {
           }
           const { name, link, owner, likes, _id } = user;
 
-          return res.send({ name, link, owner, likes, _id });
+          return res.send({
+            name, link, owner, likes, _id,
+          });
         });
       }
       throw new NotCardOwnerError();
