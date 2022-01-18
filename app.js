@@ -71,10 +71,11 @@ app.use((req, res, next) => {
 
 app.use(errors());
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   res.status(err.statusCode === undefined ? 500 : err.statusCode).send({
     message: `${err.message} thats it`,
   });
+  next();
 });
 
 app.listen(3000, () => {
