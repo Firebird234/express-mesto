@@ -1,7 +1,7 @@
 module.exports.cors = (req, res, next) => {
   const allowedCors = [
-    'https://best-site.ever.nomoredomains.work/',
-    'http://best-site.ever.nomoredomains.work/',
+    'https://api.best-site.ever.nomoredomains.work/',
+    'http://api.best-site.ever.nomoredomains.work/',
   ];
   const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
 
