@@ -11,8 +11,10 @@ const { login } = require('./controllers/userControllers/login');
 const { createUser } = require('./controllers/userControllers/createUser');
 const { auth } = require('./middlewares/auth');
 const { ValError } = require('./errors/ValError');
-
 const { NoSuchRouteError } = require('./errors/NoSuchRouteError');
+
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { cors } = require('./middlewares/cors');
 
 const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb');
@@ -23,6 +25,9 @@ app.use(
   }),
 );
 app.use(cookieParser());
+
+app.use(requestLogger);
+app.use(cors);
 
 app.post(
   '/signin',
@@ -69,6 +74,7 @@ app.use((req, res, next) => {
   next(new NoSuchRouteError());
 });
 
+app.use(errorLogger);
 app.use(errors());
 
 app.use((err, req, res, next) => {
