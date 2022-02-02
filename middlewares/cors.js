@@ -2,10 +2,13 @@ module.exports.cors = (req, res, next) => {
   const allowedCors = [
     'https://best-site.ever.nomoredomains.work',
     'http://best-site.ever.nomoredomains.work',
+    'https://localhost:3000',
     'http://localhost:3000',
+    'http://localhost:3001',
+    'https://localhost:3001',
   ];
   const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
-  console.log(origin);
+
   // проверяем, что источник запроса есть среди разрешённых
   if (allowedCors.includes(origin)) {
     // устанавливаем заголовок, который разрешает браузеру запросы с этого источника

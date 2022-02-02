@@ -44,11 +44,10 @@ app.post(
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
-      name: Joi.string().required(),
-      about: Joi.string().required(),
+      name: Joi.string(),
+      about: Joi.string(),
       avatar: Joi.string()
         .min(2)
-        .required()
         .custom((value) => {
           if (
             !validator.isURL(value, {
@@ -59,7 +58,7 @@ app.post(
           }
           return value;
         }),
-      password: Joi.string().required(),
+      password: Joi.string(),
     }),
   }),
   createUser,

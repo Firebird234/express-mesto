@@ -4,6 +4,7 @@ const { CardNotFoundError } = require('../../errors/CardNotFoundError');
 
 module.exports.removeLike = (req, res, next) => {
   const me = req.user.id;
+  console.log(me);
   const { cardId } = req.params;
   Card.findByIdAndUpdate(
     cardId,

@@ -12,7 +12,8 @@ module.exports.updateUserMe = (req, res, next) => {
   return User.findByIdAndUpdate(
     me,
     {
-      name, about,
+      name,
+      about,
     },
     {
       new: true, // обработчик then получит на вход обновлённую запись
@@ -25,10 +26,13 @@ module.exports.updateUserMe = (req, res, next) => {
         console.log(2);
         return next(new UserNoundError());
       }
-      const { name, about, _id } = user;
+      const { name, about, avatar, _id } = user;
 
       return res.send({
-        name, about, _id,
+        name,
+        about,
+        _id,
+        avatar,
       });
     })
     .catch((err) => {
