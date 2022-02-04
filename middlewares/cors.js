@@ -16,9 +16,10 @@ module.exports.cors = (req, res, next) => {
 
   // сохраняем список заголовков исходного запроса
   const requestHeaders = req.headers['access-control-request-headers'];
-
+  console.log('outside if');
   // проверяем, что источник запроса есть среди разрешённых
   if (allowedCors.includes(origin)) {
+    console.log('inside if');
     // устанавливаем заголовок, который разрешает браузеру запросы с этого источника
     res.header('Access-Control-Allow-Origin', '*');
   }
