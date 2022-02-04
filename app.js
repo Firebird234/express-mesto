@@ -16,8 +16,11 @@ const { NoSuchRouteError } = require('./errors/NoSuchRouteError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { cors } = require('./middlewares/cors');
 
-const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb');
+
+const app = express();
+app.use(cors);
+
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
@@ -27,7 +30,6 @@ app.use(
 app.use(cookieParser());
 
 app.use(requestLogger);
-app.use(cors);
 
 app.post(
   '/signin',
